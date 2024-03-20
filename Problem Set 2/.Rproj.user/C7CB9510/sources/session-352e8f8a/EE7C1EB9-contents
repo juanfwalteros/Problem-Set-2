@@ -1,0 +1,107 @@
+## Eduard Martinez
+## Update: 11-03-2024
+
+## limpiar entonro
+rm(list=ls())
+
+## instalar/llamar pacman
+require(pacman)
+
+## usar la función p_load de pacman para instalar/llamar las librerías de la clase
+p_load(tidyverse, ## manipular/limpiar conjuntos de datos.
+       rio, ## para leer/escribir archivos desde diferentes formatos. 
+       skimr, ## skim: describir un conjunto de datos
+       janitor) ##  tabyl: frecuencias relativas
+
+## **[1.] Aplicación: GEIH*
+
+# Importe 
+cg <- import("input/Enero - Cabecera - Caracteristicas generales (Personas).csv") %>% clean_names()
+
+ocu <- import("input/Enero - Cabecera - Ocupados.csv") %>% clean_names()
+
+#clean_names() limpia los nombres de las variables, las pone minusculas
+
+# verifique las llaves con el siguiente vector c("directorio","secuencia_p","orden")
+
+# colapse los datos de la GEIH
+geih <- left_join(x = cg, y = ocu, by = c("directorio","secuencia_p","orden"))
+#left_join me mantiene las observaciones que están en x y que también se encuentren en y
+
+## **[2.] Descriptivas de un conjunto de datos**
+
+tabyl(geih$p6020) #me dice proporcion de hombres y mujeres, 1 hombre 2 mujer
+
+### **2.1 Generales**
+
+# Utilice summary para una descripción general 
+summary(geih$p6040)
+
+# select + summarize_all 
+select (.data=geih,
+        p6020,p6040,p6500) |> summarize_all(mean)
+
+### **2.2 Agrupadas**
+
+# ingreso laboral promedio por sexo
+geih |> group_by(p6020) |> 
+  summarise(ing_mean=mean(p6500,na.rm=T)) #group_by es categoria por la que agrupa info
+
+geih <- mutate(geih,mujer=ifelse(p6020==2,1,0))
+
+geih |> group_by(mujer) |> summarize(ing_mean=mean(p6500,na.rm=T))
+
+# ingreso laboral promedio por sexo y tipo de 
+
+geih |> group_by(mujer,p6450) |> summarize(ing_mean=mean(p6500,na.rm=T))
+
+# ingreso laboral promedio/mediano y años promedio en fondo de pension por sexo
+
+geih |> group_by(mujer,p6450) |> summarize(ing_mean=mean(p6500,na.rm=T),
+                                           med_edad=median(p6040,na.rm=T))
+
+
+# ingreso laboral promedio/mediano y años promedio en fondo de pension por sexo y tipo contrato
+
+# guardar resultados en objeto
+
+
+### **2.3 Pivotear**
+
+# pivot_longer
+
+# pivot_wider
+
+#diferencias de salarios por departamento, pongo .x porque es la base mas completa por left_join
+tabyl(is.na(geih$dpto.x))
+tabyl(is.na(geih$dpto.y))
+
+
+ingreso <- geih |> group_by(mujer,dpto.x) |> summarize(ingreso_mean=mean(p6500,na.rm=T))
+
+ingreso
+
+export(ingreso,"output/ingreso_mujer.xlsx")
+
+##pivot wider
+
+ingreso_p <- pivot_wider(data=ingreso,
+                         id_cols=dpto.x,
+                         names_from=mujer,
+                         values_from=ingreso_mean)
+#rename
+ingreso_p <- rename(.data=ingreso_p, "mujer"="1", "hombre"="0")
+
+ingreso_p <- mutate(ingreso_p,dif=mujer-hombre)
+
+hist(ingreso_p$dif) #me muestra la concentracion en la diferencia de ingresos, de -400k a 200k
+
+#bono: hacerlo con la mediana tambien, tres columnas extra, mediana h, m y diferencia de mediana
+ingreso_p <- rename(.data=ingreso_p, "mujer"="1", "hombre"="0")
+
+
+
+ingreso_p <- pivot_wider(data=ingreso,
+                         id_cols=dpto.x,
+                         names_from=mujer,
+                         values_from=ingreso_mean)
