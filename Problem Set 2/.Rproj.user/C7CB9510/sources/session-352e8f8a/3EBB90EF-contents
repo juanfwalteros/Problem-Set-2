@@ -1,0 +1,13 @@
+##Clase 4
+
+rm(list=ls())
+require(pacman)
+p_load(rio,skimr,janitor)
+
+##directorio
+getwd()
+list.files()
+setwd("C:/Users/PC/OneDrive - Universidad de los Andes/Octavo/Taller R/clase-04-main/input")
+
+##datos
+data <- import("poblacion magdalena.rds")
