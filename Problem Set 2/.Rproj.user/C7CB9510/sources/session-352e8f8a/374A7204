@@ -3,7 +3,7 @@
     "path": "C:/Users/juanf/OneDrive - Universidad de los Andes/Octavo/Taller R/Problem Set 2/Problem-Set-2/Problem Set 2/code/202022380.R",
     "project_path": "code/202022380.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "493514378",
     "contents": "",
     "dirty": false,
     "created": 1710975082402.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "5,0",
-        "scrollLine": "54"
+        "cursorPosition": "69,0",
+        "scrollLine": "35"
     },
     "folds": "",
-    "lastKnownWriteTime": 1710980800,
+    "lastKnownWriteTime": 1710992589,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1710980800512,
+    "last_content_update": 1710992589066,
     "read_only": false,
     "read_only_alternatives": []
 }
